@@ -1,0 +1,1762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Our Anniversary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Poppins:wght@300;400;500;600&family=Caveat:wght@500;600;700&family=Mrs+Saint+Delafield&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --peach-1: #ffe3d1;
+    --peach-2: #ffcdb2;
+    --peach-3: #ffb4a2;
+    --cream: #fff6ee;
+    --paper: #fdf2e4;
+    --plum: #6b3f4d;
+    --plum-soft: #8a5a68;
+    --gold: #c9975a;
+    --gold-light: #e3bd8d;
+    --rose: #e8927c;
+    --white: #fffaf5;
+    --error: #d16b6b;
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+
+  html,body{ height:100%; }
+
+  body{
+    font-family:'Poppins', sans-serif;
+    background: radial-gradient(ellipse at top, var(--peach-1) 0%, var(--peach-2) 45%, var(--peach-3) 100%);
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:100vh;
+    overflow:hidden;
+  }
+
+  /* ---------- Falling tulips (shared across both scenes) ---------- */
+  #tulip-field{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:1;
+    overflow:hidden;
+  }
+
+  .tulip{
+    position:absolute;
+    top:-10%;
+    opacity:0.9;
+    animation-name: fall;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    will-change: transform;
+  }
+
+  .tulip svg{ display:block; filter: drop-shadow(0 4px 6px rgba(107,63,77,0.15)); }
+
+  @keyframes fall{
+    0%{ transform: translateY(-10vh) translateX(0) rotate(0deg); }
+    50%{ transform: translateY(55vh) translateX(20px) rotate(180deg); }
+    100%{ transform: translateY(115vh) translateX(-10px) rotate(360deg); }
+  }
+
+  /* ---------- Ambient glow ---------- */
+  .glow{ position:fixed; border-radius:50%; filter: blur(60px); opacity:0.5; z-index:0; pointer-events:none; }
+  .glow-1{ width:420px; height:420px; background: var(--gold-light); top:-100px; left:-100px; }
+  .glow-2{ width:380px; height:380px; background: var(--rose); bottom:-120px; right:-80px; }
+
+  /* ---------- Scene 1: Lock stage ---------- */
+  .stage{
+    position:relative;
+    z-index:2;
+    width:min(92vw, 420px);
+    transition: opacity .5s ease, transform .5s ease, filter .5s ease;
+  }
+
+  .stage.fade-out{
+    opacity:0;
+    transform: scale(.94);
+    filter: blur(6px);
+    pointer-events:none;
+  }
+
+  .card{
+    background: linear-gradient(180deg, var(--white) 0%, var(--cream) 100%);
+    border-radius:28px;
+    padding:44px 34px 38px;
+    box-shadow: 0 30px 60px -20px rgba(107,63,77,0.35), 0 2px 0 rgba(255,255,255,0.6) inset;
+    border: 1px solid rgba(201,151,90,0.25);
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+    transition: transform 0.6s cubic-bezier(.22,1,.36,1), opacity 0.6s ease;
+  }
+
+  .card::before{
+    content:'';
+    position:absolute; top:0; left:0; right:0; height:4px;
+    background: linear-gradient(90deg, var(--rose), var(--gold), var(--rose));
+    background-size:200% 100%;
+    animation: shimmer 4s linear infinite;
+  }
+
+  @keyframes shimmer{ 0%{ background-position: 0% 50%; } 100%{ background-position: 200% 50%; } }
+
+  .icon-wrap{
+    width:64px; height:64px; margin:0 auto 18px;
+    display:flex; align-items:center; justify-content:center;
+    background: linear-gradient(135deg, var(--peach-1), var(--peach-2));
+    border-radius:50%;
+    box-shadow: 0 8px 20px -6px rgba(232,146,124,0.6);
+  }
+
+  .eyebrow{ font-size:11px; letter-spacing:3px; text-transform:uppercase; color: var(--gold); font-weight:600; margin-bottom:10px; }
+
+  h1{ font-family:'Playfair Display', serif; font-weight:600; font-size:26px; color: var(--plum); line-height:1.35; margin-bottom:8px; }
+
+  .subtitle{ font-size:13px; color: var(--plum-soft); font-weight:300; margin-bottom:30px; letter-spacing:0.2px; }
+
+  .digits{ display:flex; justify-content:center; gap:7px; margin-bottom:10px; }
+
+  .digits input{
+    width:32px; height:44px; text-align:center; font-size:19px;
+    font-family:'Playfair Display', serif; font-weight:600; color: var(--plum);
+    background: var(--white); border:1.5px solid rgba(201,151,90,0.35); border-radius:10px;
+    outline:none; transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.15s ease;
+  }
+
+  .digits input:focus{ border-color: var(--rose); box-shadow: 0 0 0 4px rgba(232,146,124,0.15); transform: translateY(-1px); }
+
+  .digits .sep{ width:6px; display:flex; align-items:flex-end; justify-content:center; padding-bottom:14px; color: var(--gold); font-size:14px; font-weight:600; }
+
+  .hint{ font-size:11px; color: var(--plum-soft); opacity:0.65; margin-bottom:26px; letter-spacing:0.3px; }
+
+  .error-msg{ font-size:12px; color: var(--error); height:16px; margin-bottom:14px; font-weight:500; opacity:0; transition: opacity 0.3s ease; }
+  .error-msg.show{ opacity:1; }
+
+  .unlock-btn{
+    width:100%; padding:14px; border:none; border-radius:14px;
+    background: linear-gradient(135deg, var(--rose), var(--gold));
+    color: var(--white); font-family:'Poppins', sans-serif; font-size:14px; font-weight:600;
+    letter-spacing:0.5px; cursor:pointer; box-shadow: 0 12px 24px -10px rgba(201,151,90,0.6);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .unlock-btn:hover{ transform: translateY(-2px); box-shadow: 0 16px 28px -10px rgba(201,151,90,0.75); }
+  .unlock-btn:active{ transform: translateY(0); }
+
+  .explore-btn{
+    margin-top:16px; width:100%; padding:13px; border-radius:14px;
+    border:1.5px solid var(--gold); background:transparent; color: var(--gold);
+    font-family:'Poppins', sans-serif; font-weight:600; font-size:12.5px; letter-spacing:0.6px;
+    cursor:pointer; transition: all .25s ease;
+  }
+  .explore-btn:hover{ background: var(--gold); color: var(--white); transform: translateY(-2px); box-shadow: 0 12px 20px -10px rgba(201,151,90,0.5); }
+
+  .shake{ animation: shakeAnim 0.5s; }
+  @keyframes shakeAnim{
+    10%,90%{ transform: translateX(-2px); } 20%,80%{ transform: translateX(4px); }
+    30%,50%,70%{ transform: translateX(-8px); } 40%,60%{ transform: translateX(8px); }
+  }
+
+  .success{ display:none; text-align:center; }
+  .success.show{ display:block; animation: fadeUp 0.7s ease; }
+  @keyframes fadeUp{ from{ opacity:0; transform: translateY(14px); } to{ opacity:1; transform: translateY(0); } }
+
+  .heart{ width:70px; height:70px; margin:0 auto 20px; }
+
+  .success h2{ font-family:'Playfair Display', serif; font-style:italic; font-weight:600; font-size:28px; color: var(--plum); margin-bottom:10px; }
+  .success p{ font-size:13.5px; color: var(--plum-soft); line-height:1.7; font-weight:300; margin-bottom:6px; }
+
+  .date-stamp{
+    display:inline-block; margin-top:18px; padding:8px 20px;
+    border:1px solid rgba(201,151,90,0.4); border-radius:999px;
+    font-size:11px; letter-spacing:2px; text-transform:uppercase; color: var(--gold); font-weight:600;
+  }
+
+  .hidden{ display:none !important; }
+
+  /* ---------- Scene 2: World view ---------- */
+  #worldView{
+    position:fixed; inset:0; z-index:4;
+    display:flex; align-items:center; justify-content:center;
+    opacity:0; pointer-events:none;
+    transition: opacity .7s ease;
+  }
+  #worldView.show{ opacity:1; pointer-events:auto; }
+
+  .back-btn{
+    position:absolute; top:26px; left:26px;
+    background: rgba(255,255,255,0.55); backdrop-filter: blur(6px);
+    border:1px solid rgba(201,151,90,0.35); padding:9px 18px; border-radius:999px;
+    font-family:'Poppins', sans-serif; font-size:12px; color: var(--plum-soft);
+    cursor:pointer; transition: all .2s ease; z-index:5;
+  }
+  .back-btn:hover{ background: var(--white); transform: translateX(-2px); }
+
+  .world-inner{ text-align:center; max-width:560px; padding:0 24px; }
+
+  .world-eyebrow{ font-size:11px; letter-spacing:3px; text-transform:uppercase; color: var(--gold); font-weight:600; margin-bottom:12px; }
+
+  .world-title{ font-family:'Playfair Display', serif; font-weight:600; font-size:34px; color: var(--plum); margin-bottom:10px; }
+
+  .world-sub{ font-size:13.5px; color: var(--plum-soft); font-weight:300; margin-bottom:52px; }
+
+  .hearts-row{ display:flex; justify-content:center; align-items:flex-end; gap:58px; }
+
+  .heart-btn{
+    background:none; border:none; cursor:pointer;
+    display:flex; flex-direction:column; align-items:center; gap:16px;
+    font-family:'Poppins', sans-serif;
+  }
+
+  .heart-btn svg{
+    width:86px; height:86px;
+    filter: drop-shadow(0 14px 24px rgba(232,146,124,.45));
+    transition: transform .35s cubic-bezier(.22,1,.36,1);
+    animation: heartbeat 3.2s ease-in-out infinite;
+  }
+  .heart-btn:hover svg{ transform: translateY(-10px) scale(1.1); }
+
+  .heart-btn.heart-mid{ transform: translateY(-20px); }
+  .heart-btn.heart-mid svg{ width:108px; height:108px; animation-delay: .3s; }
+  .heart-btn.heart-right svg{ animation-delay: .6s; }
+
+  @keyframes heartbeat{
+    0%,100%{ transform: scale(1); } 15%{ transform: scale(1.08); }
+    30%{ transform: scale(1); } 45%{ transform: scale(1.05); } 60%{ transform: scale(1); }
+  }
+
+  .heart-label{ font-size:13px; letter-spacing:1px; text-transform:uppercase; color: var(--plum-soft); font-weight:500; }
+
+  /* ---------- Generic overlay ---------- */
+  .overlay{
+    position:fixed; inset:0; z-index:10;
+    display:flex; align-items:center; justify-content:center;
+    opacity:0; pointer-events:none;
+    transition: opacity .4s ease;
+  }
+  .overlay.show{ opacity:1; pointer-events:auto; }
+
+  .overlay-backdrop{ position:absolute; inset:0; background: rgba(107,63,77,0.4); backdrop-filter: blur(5px); }
+
+  .close-btn{
+    position:absolute; top:16px; right:18px;
+    background:none; border:none; font-size:16px; color: var(--plum-soft);
+    cursor:pointer; width:30px; height:30px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    transition: background .2s ease;
+  }
+  .close-btn:hover{ background: rgba(201,151,90,0.15); }
+
+  /* ---------- Envelope + Letter ---------- */
+  .envelope-scene{
+    position:relative; z-index:11;
+    display:flex; align-items:center; justify-content:center;
+    transition: opacity .35s ease, transform .35s ease;
+  }
+  .envelope-scene.hidden-away{ opacity:0; transform: scale(.9); pointer-events:none; position:absolute; }
+
+  .envelope-wrap{ text-align:center; }
+
+  .envelope{
+    width:270px; height:180px; position:relative; margin:0 auto;
+    cursor:pointer;
+  }
+
+  .envelope-back{
+    position:absolute; inset:0; border-radius:8px;
+    background: linear-gradient(160deg, #fff3e6, #ffdcc0);
+    box-shadow: 0 24px 45px -18px rgba(107,63,77,0.45);
+  }
+
+  .envelope-letter{
+    position:absolute; left:8%; right:8%; bottom:8px; height:75%;
+    background: var(--paper); border-radius:6px 6px 2px 2px;
+    box-shadow: 0 -6px 14px rgba(107,63,77,0.1);
+    transform: translateY(18%);
+    transition: transform .7s cubic-bezier(.22,1,.36,1) .1s;
+    z-index:2;
+  }
+
+  .envelope-flap{
+    position:absolute; top:0; left:0; width:100%; height:62%;
+    background: linear-gradient(160deg, #ffcdb2, #f3ac93);
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    transform-origin: top;
+    transition: transform .7s cubic-bezier(.22,1,.36,1);
+    z-index:3;
+  }
+
+  .wax-seal{
+    position:absolute; top:34%; left:50%; transform: translate(-50%,-50%);
+    width:46px; height:46px; border-radius:50%;
+    background: radial-gradient(circle at 32% 30%, #ef9d85, #b85c4a);
+    display:flex; align-items:center; justify-content:center;
+    font-size:19px; box-shadow: 0 5px 12px rgba(0,0,0,0.28);
+    z-index:4; transition: opacity .3s ease, transform .3s ease;
+  }
+
+  .envelope.open .envelope-flap{ transform: rotateX(180deg); }
+  .envelope.open .envelope-letter{ transform: translateY(-48%); }
+  .envelope.open .wax-seal{ opacity:0; transform: translate(-50%,-50%) scale(.4); }
+
+  .envelope-caption{
+    margin-top:22px; font-size:12px; letter-spacing:2px; text-transform:uppercase;
+    color: var(--plum-soft); opacity:.7;
+  }
+
+  .letter-card{
+    position:relative; z-index:11; width:min(90vw, 460px); max-height:82vh;
+    opacity:0; transform: scale(.92) rotate(0deg); pointer-events:none;
+    position:absolute;
+    transition: opacity .5s ease, transform .5s ease;
+  }
+  .letter-card.show{ opacity:1; transform: scale(1) rotate(-0.4deg); pointer-events:auto; position:relative; }
+
+  .letter-paper{
+    background:
+      repeating-linear-gradient(var(--paper) 0px, var(--paper) 33px, rgba(201,151,90,0.14) 34px),
+      var(--paper);
+    border-radius:4px;
+    padding:44px 40px 34px;
+    box-shadow: 0 30px 60px -20px rgba(107,63,77,0.45);
+    max-height:78vh; overflow-y:auto;
+    position:relative;
+  }
+
+  .letter-paper::before{
+    content:'🌷';
+    position:absolute; top:16px; right:20px; font-size:20px; opacity:.5;
+  }
+
+  .letter-greeting{
+    font-family:'Caveat', cursive; font-weight:600; font-size:30px;
+    color: var(--plum); margin-bottom:14px;
+  }
+
+  .letter-body{
+    font-family:'Caveat', cursive; font-weight:500; font-size:22px; line-height:1.75;
+    color: var(--plum-soft); margin-bottom:16px;
+  }
+
+  .letter-body .placeholder{
+    color: var(--rose); border-bottom:1px dashed var(--rose); padding:0 2px;
+  }
+
+  .letter-sign{
+    font-family:'Mrs Saint Delafield', cursive; font-size:32px;
+    color: var(--plum); margin-top:18px; line-height:1.4;
+  }
+
+  /* ---------- Simple modal (memories / what's next) ---------- */
+  .simple-card{
+    position:relative; z-index:11; width:min(88vw, 380px);
+    background: linear-gradient(180deg, var(--white), var(--cream));
+    border-radius:24px; padding:38px 30px 32px; text-align:center;
+    box-shadow: 0 30px 60px -20px rgba(107,63,77,0.4);
+    border:1px solid rgba(201,151,90,0.25);
+    opacity:0; transform: scale(.9); pointer-events:none;
+    transition: opacity .4s ease, transform .4s ease;
+  }
+  .simple-card.show{ opacity:1; transform: scale(1); pointer-events:auto; }
+
+  .simple-icon{ font-size:34px; margin-bottom:14px; }
+
+  .simple-card h3{ font-family:'Playfair Display', serif; font-weight:600; font-size:21px; color: var(--plum); margin-bottom:12px; }
+
+  .simple-card p{ font-size:13px; color: var(--plum-soft); line-height:1.7; font-weight:300; }
+
+  .simple-list{ list-style:none; text-align:left; margin-top:16px; }
+  .simple-list li{
+    font-size:13px; color: var(--plum-soft); padding:8px 0 8px 26px; position:relative;
+    border-bottom:1px dashed rgba(201,151,90,0.3); line-height:1.5;
+  }
+  .simple-list li:last-child{ border-bottom:none; }
+  .simple-list li::before{ content:'🌷'; position:absolute; left:0; top:8px; font-size:12px; }
+
+  @media (prefers-reduced-motion: reduce){
+    .tulip{ animation: none !important; display:none; }
+    .card::before{ animation:none; }
+    .heart-btn svg{ animation:none; }
+  }
+
+  @media (max-width:400px){
+    .digits input{ width:26px; height:40px; font-size:16px; }
+    .card{ padding:36px 20px 30px; }
+    .hearts-row{ gap:28px; }
+    .heart-btn svg{ width:62px; height:62px; }
+    .heart-btn.heart-mid svg{ width:78px; height:78px; }
+    .letter-paper{ padding:34px 24px 26px; }
+    .letter-body{ font-size:19px; }
+  }
+
+  /* ---------- Memories: 24-month heart polaroid gallery ---------- */
+  .memories-card{
+    position:relative; z-index:11; width:min(94vw, 920px); max-height:86vh;
+    opacity:0; transform: scale(.94); pointer-events:none;
+    transition: opacity .45s ease, transform .45s ease;
+  }
+  .memories-card.show{ opacity:1; transform: scale(1); pointer-events:auto; }
+
+  .memories-inner{
+    background: linear-gradient(180deg, var(--white) 0%, var(--cream) 100%);
+    border-radius:26px;
+    padding:36px 28px 30px;
+    box-shadow: 0 30px 70px -20px rgba(107,63,77,0.45);
+    border:1px solid rgba(201,151,90,0.25);
+    max-height:82vh; overflow-y:auto;
+    text-align:center;
+  }
+
+  .memories-eyebrow{ font-size:11px; letter-spacing:3px; text-transform:uppercase; color: var(--gold); font-weight:600; margin-bottom:8px; }
+  .memories-title{ font-family:'Playfair Display', serif; font-weight:600; font-size:26px; color: var(--plum); margin-bottom:6px; }
+  .memories-sub{ font-size:12.5px; color: var(--plum-soft); font-weight:300; margin-bottom:26px; }
+
+  .poly-grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(122px, 1fr));
+    gap:22px 16px;
+    padding:6px 4px 10px;
+  }
+
+  .poly-card{
+    background: var(--white);
+    border-radius:8px;
+    padding:10px 10px 12px;
+    box-shadow: 0 10px 22px -10px rgba(107,63,77,0.3);
+    transform: rotate(var(--r, 0deg));
+    transition: transform .25s ease, box-shadow .25s ease, z-index 0s;
+    position:relative;
+  }
+  .poly-card:hover{ transform: rotate(0deg) scale(1.06); box-shadow: 0 16px 30px -10px rgba(107,63,77,0.4); z-index:3; }
+
+  .poly-month{
+    font-size:9.5px; letter-spacing:1.5px; text-transform:uppercase;
+    color: var(--gold); font-weight:600; margin-bottom:6px;
+  }
+
+  .heart-photo{
+    width:100%; aspect-ratio: 1 / 0.95;
+    clip-path: url(#heartClip);
+    -webkit-clip-path: url(#heartClip);
+    background: linear-gradient(150deg, var(--peach-1), var(--peach-2));
+    background-size: cover; background-position:center;
+    position:relative; cursor:pointer; overflow:hidden;
+    display:flex; align-items:center; justify-content:center;
+    transition: filter .3s ease;
+  }
+  .heart-photo.has-photo .poly-placeholder{ display:none; }
+
+  .poly-placeholder{
+    display:flex; flex-direction:column; align-items:center; gap:3px;
+    color: var(--plum-soft); opacity:.75;
+  }
+  .poly-placeholder .emoji{ font-size:18px; }
+  .poly-placeholder span{ font-size:8px; letter-spacing:0.5px; text-transform:uppercase; font-weight:600; }
+
+  .heart-photo.fx-vintage{ filter: sepia(0.4) contrast(1.05) saturate(1.15) brightness(1.02); }
+  .heart-photo.fx-warm{ filter: sepia(0.18) saturate(1.4) hue-rotate(-8deg) brightness(1.06); }
+  .heart-photo.fx-bw{ filter: grayscale(1) contrast(1.12); }
+  .heart-photo.fx-dreamy{ filter: brightness(1.1) contrast(0.9) saturate(1.2) blur(0.3px); }
+
+  .poly-caption{
+    font-family:'Caveat', cursive; font-weight:600; font-size:15px;
+    color: var(--plum); margin-top:8px; outline:none; line-height:1.2;
+  }
+  .poly-sub{
+    font-family:'Poppins', sans-serif; font-size:9px; color: var(--plum-soft);
+    opacity:.75; margin-top:2px; outline:none; line-height:1.3;
+  }
+
+  .effect-btn{
+    margin-top:8px; border:none; background: rgba(201,151,90,0.12);
+    color: var(--gold); font-family:'Poppins', sans-serif; font-size:8.5px; font-weight:600;
+    letter-spacing:0.4px; padding:4px 8px; border-radius:999px; cursor:pointer;
+    transition: background .2s ease;
+  }
+  .effect-btn:hover{ background: rgba(201,151,90,0.25); }
+
+  .memories-hint{
+    margin-top:22px; font-size:10.5px; color: var(--plum-soft); opacity:.6; letter-spacing:0.3px;
+  }
+
+  .poly-card-final{
+    border:1.5px solid var(--gold);
+    box-shadow: 0 0 0 5px rgba(201,151,90,0.14), 0 10px 22px -10px rgba(107,63,77,0.3);
+  }
+  .poly-card-final:hover{ box-shadow: 0 0 0 5px rgba(201,151,90,0.2), 0 16px 30px -10px rgba(107,63,77,0.4); }
+  .poly-card-final .heart-photo{ animation: finalGlow 2.6s ease-in-out infinite; }
+  .poly-card-final .poly-month{ color: var(--rose); }
+  .poly-card-final .poly-caption{ font-size:16px; }
+
+  @keyframes finalGlow{
+    0%,100%{ filter: drop-shadow(0 0 0 rgba(232,146,124,0)); }
+    50%{ filter: drop-shadow(0 0 10px rgba(232,146,124,0.55)); }
+  }
+
+  /* ---------- Locked-frame art gallery (Next 3-4th Anniversarry art gallery) ---------- */
+  .frame-progress{ max-width:420px; margin:0 auto 22px; }
+  .frame-progress-bar{ width:100%; height:6px; background: rgba(201,151,90,0.15); border-radius:999px; overflow:hidden; }
+  .frame-progress-fill{ height:100%; background: linear-gradient(90deg, var(--rose), var(--gold)); border-radius:999px; transition: width .5s ease; }
+  .frame-progress-label{ font-size:11px; color: var(--plum-soft); margin-top:7px; letter-spacing:0.3px; }
+
+  .gallery-notice{ font-size:11.5px; color: var(--error); height:16px; margin:-8px 0 16px; opacity:0; transition: opacity .3s ease; font-weight:500; }
+  .gallery-notice.show{ opacity:1; }
+
+  .gallery-complete-banner{
+    background: linear-gradient(135deg, rgba(232,146,124,0.14), rgba(201,151,90,0.14));
+    border:1px solid rgba(201,151,90,0.3); border-radius:16px;
+    padding:14px 18px; margin-bottom:22px;
+    font-family:'Playfair Display', serif; font-style:italic; font-weight:600;
+    font-size:15px; color: var(--rose);
+  }
+
+  .heart-photo.frame-locked{ filter: grayscale(1) brightness(0.82); cursor:not-allowed; }
+  .heart-photo.frame-locked .poly-placeholder{ opacity:.55; }
+
+  .poly-card.frame-current{ animation: currentPulse 1.9s ease-in-out infinite; }
+  @keyframes currentPulse{
+    0%,100%{ box-shadow: 0 10px 22px -10px rgba(107,63,77,0.3), 0 0 0 0 rgba(232,146,124,0.55); }
+    50%{ box-shadow: 0 10px 22px -10px rgba(107,63,77,0.3), 0 0 0 9px rgba(232,146,124,0); }
+  }
+  .poly-card.frame-current .heart-photo{ cursor:pointer; }
+  .poly-card.frame-current .poly-month{ color: var(--rose); }
+
+  .poly-card.frame-completed .heart-photo{ cursor:pointer; }
+
+  .check-badge{
+    position:absolute; top:6px; right:6px; z-index:2;
+    width:18px; height:18px; border-radius:50%; background: var(--gold); color:var(--white);
+    font-size:10px; display:flex; align-items:center; justify-content:center;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.25);
+  }
+
+  .frame-detail{ text-align:left; max-width:340px; margin:0 auto; }
+  .frame-detail-eyebrow{ font-size:11px; letter-spacing:2px; text-transform:uppercase; color: var(--gold); font-weight:600; text-align:center; margin-bottom:10px; }
+  .frame-detail-q{ font-family:'Playfair Display', serif; font-weight:600; font-size:19px; color: var(--plum); text-align:center; margin-bottom:18px; line-height:1.4; }
+  .frame-detail-photo{
+    width:190px; aspect-ratio: 1/0.95; margin:0 auto 18px;
+    clip-path: url(#heartClip); -webkit-clip-path: url(#heartClip);
+    background: linear-gradient(150deg, var(--peach-1), var(--peach-2));
+    background-size:cover; background-position:center;
+    display:flex; align-items:center; justify-content:center; cursor:pointer;
+    transition: filter .3s ease;
+  }
+  .frame-detail-photo.has-photo .poly-placeholder{ display:none; }
+  .frame-detail-hint{ text-align:center; font-size:11px; color: var(--plum-soft); opacity:.65; margin:-10px 0 18px; }
+  .frame-detail-actions{ display:flex; gap:10px; margin-top:20px; }
+  .frame-detail-actions .pb-btn{ flex:1; }
+  .frame-detail-actions .shutter-btn{ flex:1.4; margin-top:0; }
+  .frame-warn{ font-size:11.5px; color: var(--error); text-align:center; margin-top:10px; height:14px; opacity:0; transition: opacity .3s ease; }
+  .frame-warn.show{ opacity:1; }
+
+  /* ---------- What's Next: heart-shaped anniversary photobooth ---------- */
+  .photobooth-card{
+    position:relative; z-index:11; width:min(92vw, 420px); max-height:88vh;
+    opacity:0; transform: scale(.94); pointer-events:none;
+    transition: opacity .45s ease, transform .45s ease;
+  }
+  .photobooth-card.show{ opacity:1; transform: scale(1); pointer-events:auto; }
+
+  .photobooth-inner{
+    background: linear-gradient(180deg, var(--white) 0%, var(--cream) 100%);
+    border-radius:26px; padding:38px 30px 32px; text-align:center;
+    box-shadow: 0 30px 70px -20px rgba(107,63,77,0.45);
+    border:1px solid rgba(201,151,90,0.25);
+    max-height:84vh; overflow-y:auto;
+  }
+
+  .pb-eyebrow{ font-size:11px; letter-spacing:3px; text-transform:uppercase; color: var(--gold); font-weight:600; margin-bottom:8px; }
+  .pb-title{ font-family:'Playfair Display', serif; font-weight:600; font-size:22px; color: var(--plum); margin-bottom:6px; }
+  .pb-sub{ font-size:12.5px; color: var(--plum-soft); font-weight:300; margin-bottom:22px; }
+
+  .shutter-btn{
+    margin-top:20px; padding:13px 30px; border:none; border-radius:999px;
+    background: linear-gradient(135deg, var(--rose), var(--gold));
+    color: var(--white); font-family:'Poppins', sans-serif; font-size:13.5px; font-weight:600;
+    letter-spacing:0.4px; cursor:pointer; box-shadow: 0 12px 24px -10px rgba(201,151,90,0.6);
+    transition: transform .2s ease;
+  }
+  .shutter-btn:hover{ transform: translateY(-2px); }
+
+  .pb-counter{ margin-top:14px; font-size:12px; color: var(--plum); font-weight:600; letter-spacing:0.4px; }
+  .pb-note{ margin-top:10px; font-size:11.5px; color: var(--plum-soft); opacity:.75; line-height:1.5; }
+
+  .pb-strip{ display:flex; justify-content:center; gap:18px; margin:8px 0 4px; }
+
+  .pb-actions{ display:flex; flex-direction:column; gap:10px; margin-top:20px; }
+  .pb-btn{
+    padding:12px; border-radius:14px; border:1.5px solid var(--gold);
+    background:transparent; color: var(--gold); font-family:'Poppins', sans-serif;
+    font-weight:600; font-size:12.5px; letter-spacing:0.4px; cursor:pointer; transition: all .25s ease;
+  }
+  .pb-btn:hover{ background: var(--gold); color: var(--white); }
+
+  .pb-final{
+    margin-top:22px; font-family:'Playfair Display', serif; font-style:italic; font-weight:600;
+    font-size:20px; color: var(--rose);
+    animation: finalGlowText 2.6s ease-in-out infinite;
+  }
+  @keyframes finalGlowText{
+    0%,100%{ text-shadow: 0 0 0 rgba(232,146,124,0); }
+    50%{ text-shadow: 0 0 14px rgba(232,146,124,0.5); }
+  }
+
+  .q-progress{ display:flex; justify-content:center; gap:7px; margin-bottom:18px; }
+  .q-dot{ width:7px; height:7px; border-radius:50%; background: rgba(201,151,90,0.3); transition: all .25s ease; }
+  .q-dot.active{ background: var(--rose); width:18px; border-radius:4px; }
+  .q-dot.done{ background: var(--gold); }
+
+  .q-input{
+    width:100%; margin-top:16px; padding:14px 16px; border-radius:14px;
+    border:1.5px solid rgba(201,151,90,0.35); background: var(--white);
+    font-family:'Caveat', cursive; font-size:19px; color: var(--plum);
+    resize:none; outline:none; transition: border-color .25s ease;
+  }
+  .q-input:focus{ border-color: var(--rose); }
+
+  .q-nav{ display:flex; justify-content:space-between; align-items:center; margin-top:18px; gap:10px; }
+  .q-nav .shutter-btn{ margin-top:0; }
+  .q-nav .pb-btn{ width:auto; padding:11px 18px; }
+
+  .q-summary{ text-align:left; margin-top:6px; }
+  .q-summary-item{
+    padding:12px 0; border-bottom:1px dashed rgba(201,151,90,0.3);
+  }
+  .q-summary-item:last-child{ border-bottom:none; }
+  .q-summary-q{
+    font-size:11px; letter-spacing:0.4px; text-transform:uppercase; color: var(--gold);
+    font-weight:600; margin-bottom:4px;
+  }
+  .q-summary-a{
+    font-family:'Caveat', cursive; font-size:19px; color: var(--plum); line-height:1.3;
+  }
+
+  /* ---------- Merged heart + heart tic-tac-toe game ---------- */
+  .hearts-row.merging .heart-btn{
+    transition: transform .7s cubic-bezier(.22,1,.36,1), opacity .7s ease;
+    transform: scale(0) translateY(20px);
+    opacity:0;
+  }
+
+  .merged-heart{
+    display:flex; flex-direction:column; align-items:center; gap:12px;
+    background:none; border:none; cursor:pointer;
+    margin:0 auto; font-family:'Poppins', sans-serif;
+  }
+  .merged-heart svg{
+    width:78px; height:78px;
+    filter: drop-shadow(0 12px 22px rgba(232,146,124,.55));
+    animation: mergedPulse 2.4s ease-in-out infinite;
+  }
+  @keyframes mergedPulse{ 0%,100%{ transform: scale(1); } 50%{ transform: scale(1.08); } }
+
+  .ttt-score{ display:flex; justify-content:center; gap:26px; margin-bottom:12px; font-size:12px; font-weight:600; letter-spacing:0.3px; }
+  .ttt-turn{ font-family:'Playfair Display', serif; font-weight:600; font-size:15px; margin-bottom:14px; }
+
+  .ttt-board{
+    display:grid; grid-template-columns: repeat(3, 1fr);
+    gap:10px; width:240px; margin:0 auto 6px;
+  }
+  .ttt-cell{
+    aspect-ratio:1; background: var(--white); border-radius:14px;
+    display:flex; align-items:center; justify-content:center; cursor:pointer;
+    box-shadow: 0 6px 14px -6px rgba(107,63,77,0.25);
+    transition: transform .15s ease;
+  }
+  .ttt-cell:hover{ transform: scale(1.06); }
+  .ttt-cell svg{ width:58%; height:58%; }
+
+  @media (max-width:480px){
+    .poly-grid{ grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap:16px 10px; }
+    .memories-inner{ padding:28px 16px 22px; }
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <clipPath id="heartClip" clipPathUnits="objectBoundingBox">
+      <path d="M0.5,0.97 C0.5,0.97 0.04,0.68 0.04,0.36 C0.04,0.16 0.19,0.02 0.36,0.02 C0.46,0.02 0.5,0.1 0.5,0.16 C0.5,0.1 0.54,0.02 0.64,0.02 C0.81,0.02 0.96,0.16 0.96,0.36 C0.96,0.68 0.5,0.97 0.5,0.97 Z"/>
+    </clipPath>
+    <linearGradient id="mergedHeartGradient" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#e8927c"/>
+      <stop offset="50%" stop-color="#f0b25a"/>
+      <stop offset="100%" stop-color="#f28aa3"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+<div class="glow glow-1"></div>
+<div class="glow glow-2"></div>
+<div id="tulip-field"></div>
+
+<!-- SCENE 1: LOCK -->
+<div class="stage" id="stage">
+  <div class="card" id="card">
+
+    <div id="lockView">
+      <div class="icon-wrap">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none">
+          <path d="M12 21C12 21 4 15.5 4 9.8C4 6.6 6.4 4.5 9 4.5C10.5 4.5 11.6 5.2 12 6C12.4 5.2 13.5 4.5 15 4.5C17.6 4.5 20 6.6 20 9.8C20 15.5 12 21 12 21Z" fill="#e8927c"/>
+        </svg>
+      </div>
+      <div class="eyebrow">A Little Question</div>
+      <h1>When is our<br>anniversary? 🌷</h1>
+      <div class="subtitle">Enter it below to unlock something sweet</div>
+
+      <div class="digits" id="digitsWrap">
+        <input type="tel" maxlength="1" inputmode="numeric" data-i="0">
+        <input type="tel" maxlength="1" inputmode="numeric" data-i="1">
+        <span class="sep">/</span>
+        <input type="tel" maxlength="1" inputmode="numeric" data-i="2">
+        <input type="tel" maxlength="1" inputmode="numeric" data-i="3">
+        <span class="sep">/</span>
+        <input type="tel" maxlength="1" inputmode="numeric" data-i="4">
+        <input type="tel" maxlength="1" inputmode="numeric" data-i="5">
+        <input type="tel" maxlength="1" inputmode="numeric" data-i="6">
+        <input type="tel" maxlength="1" inputmode="numeric" data-i="7">
+      </div>
+      <div class="hint">MM / DD / YYYY</div>
+      <div class="error-msg" id="errorMsg">That's not quite the date, love. Try again 💭</div>
+
+      <button class="unlock-btn" id="unlockBtn">Unlock Our Memory</button>
+    </div>
+
+    <div id="successView" class="success">
+      <div class="heart">
+        <svg viewBox="0 0 24 24" fill="none" width="70" height="70">
+          <path d="M12 21C12 21 3 14.7 3 8.3C3 4.8 5.7 2.5 8.7 2.5C10.6 2.5 11.6 3.4 12 4.3C12.4 3.4 13.4 2.5 15.3 2.5C18.3 2.5 21 4.8 21 8.3C21 14.7 12 21 12 21Z" fill="#e8927c"/>
+        </svg>
+      </div>
+      <h2>Happy 2nd Anniversary</h2>
+      <p>Two years of you and me, wrapped in every little<br>ordinary and extraordinary moment.</p>
+      <p>Here's to many, many more. I love you. 🌷</p>
+      <div class="date-stamp">07 · 23 · 2024</div>
+      <button class="explore-btn" id="exploreBtn">Enter To Explore Our Relationship</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- SCENE 2: WORLD -->
+<div id="worldView">
+  <button class="back-btn" id="backBtn">← Back</button>
+  <div class="world-inner">
+    <div class="world-eyebrow">Our World</div>
+    <h2 class="world-title">Step Into Us</h2>
+    <p class="world-sub">Three little doors into everything we are 🌷</p>
+
+    <div class="hearts-row">
+      <button class="heart-btn heart-left" id="heartLeft">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 21C12 21 3 14.7 3 8.3C3 4.8 5.7 2.5 8.7 2.5C10.6 2.5 11.6 3.4 12 4.3C12.4 3.4 13.4 2.5 15.3 2.5C18.3 2.5 21 4.8 21 8.3C21 14.7 12 21 12 21Z" fill="#e8927c"/></svg>
+        <span class="heart-label">The Letter</span>
+      </button>
+
+      <button class="heart-btn heart-mid" id="heartMiddle">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 21C12 21 3 14.7 3 8.3C3 4.8 5.7 2.5 8.7 2.5C10.6 2.5 11.6 3.4 12 4.3C12.4 3.4 13.4 2.5 15.3 2.5C18.3 2.5 21 4.8 21 8.3C21 14.7 12 21 12 21Z" fill="#f0b25a"/></svg>
+        <span class="heart-label">NEXT JOURNEY GALLERY</span>
+      </button>
+
+      <button class="heart-btn heart-right" id="heartRight">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 21C12 21 3 14.7 3 8.3C3 4.8 5.7 2.5 8.7 2.5C10.6 2.5 11.6 3.4 12 4.3C12.4 3.4 13.4 2.5 15.3 2.5C18.3 2.5 21 4.8 21 8.3C21 14.7 12 21 12 21Z" fill="#f28aa3"/></svg>
+        <span class="heart-label">What's Next</span>
+      </button>
+    </div>
+
+    <button class="merged-heart" id="mergedHeart" style="display:none;">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M12 21C12 21 3 14.7 3 8.3C3 4.8 5.7 2.5 8.7 2.5C10.6 2.5 11.6 3.4 12 4.3C12.4 3.4 13.4 2.5 15.3 2.5C18.3 2.5 21 4.8 21 8.3C21 14.7 12 21 12 21Z" fill="url(#mergedHeartGradient)"/></svg>
+      <span class="heart-label">Play Our Game</span>
+    </button>
+  </div>
+</div>
+
+<!-- OVERLAY: LETTER -->
+<div class="overlay" id="letterOverlay">
+  <div class="overlay-backdrop" id="letterBackdrop"></div>
+
+  <div class="envelope-scene" id="envelopeScene">
+    <div class="envelope-wrap">
+      <div class="envelope" id="envelope">
+        <div class="envelope-back"></div>
+        <div class="envelope-letter"></div>
+        <div class="envelope-flap"></div>
+        <div class="wax-seal">🌷</div>
+      </div>
+      <div class="envelope-caption">tap the envelope to open</div>
+    </div>
+  </div>
+
+  <div class="letter-card" id="letterCard">
+    <button class="close-btn" id="closeLetterBtn">✕</button>
+    <div class="letter-paper">
+      <p class="letter-greeting">My love,</p>
+      <p class="letter-body">Happy 2nd anniversary.</p>
+      <p class="letter-body">
+        It's hard to believe that it's already been two years since we started this journey together. Sometimes I
+        look back and wonder how I got so lucky to have you in my life. Out of all the people we could have met and
+        all the different paths we could have taken, we found each other. Since that day, you've become my favorite
+        person, my greatest comfort, and the place that feels most like home.
+      </p>
+      <p class="letter-body">
+        When I think about us, I don't just remember the big moments. I remember the little things that made me
+        fall in love with you even more. The random conversations that lasted for hours, the late-night calls where
+        neither of us wanted to say goodbye, the way we could laugh over the smallest things, and even the quiet
+        moments where we didn't have to say anything because just having each other was enough.
+      </p>
+      <p class="letter-body">
+        I still remember the day we spent by the sea. I remember your smile, the sound of your laughter, the warmth
+        of the sun, and how peaceful everything felt. It wasn't because something extraordinary happened — it was
+        because I was with you. Looking back now, I realize that some of my happiest memories are simply moments
+        where I got to spend time with you.
+      </p>
+      <p class="letter-body">
+        These past two years haven't always been perfect, but they've been real. We've had happy days that made us
+        feel like nothing could ever go wrong, and we've had difficult days that tested our patience, our
+        understanding, and our love. We've misunderstood each other, argued, cried, and faced moments where things
+        felt overwhelming. But through all of it, we kept choosing each other, and that's something I'll always be
+        grateful for.
+      </p>
+      <p class="letter-body">
+        Thank you for staying beside me through every version of myself. Thank you for being patient when I was
+        difficult to understand. Thank you for encouraging me when I doubted myself and for celebrating every little
+        achievement with me. You've loved me in ways I never thought I deserved, and I'll never stop being thankful
+        for that.
+      </p>
+      <p class="letter-body">I also want to take this opportunity to apologize for what happened during my graduation.</p>
+      <p class="letter-body">
+        I know I made a mistake. I know my actions hurt you, and I understand why they made you feel disappointed
+        and upset. Looking back, I wish I had handled everything differently because the last thing I ever wanted
+        was to make you question your place in my life or make you feel like you weren't my priority. I'm deeply
+        sorry for putting you through that.
+      </p>
+      <p class="letter-body">
+        You deserve honesty, respect, and reassurance, and I know I fell short that day. I can't change what already
+        happened, but I can choose what I do moving forward.
+      </p>
+      <p class="letter-body">
+        I know that saying "I'm sorry" isn't enough. Words only matter when they're followed by actions. That's why
+        I want to prove to you — not just today, but every day — that I've learned from my mistake. I want you to
+        know that she's no longer part of my life. I've chosen to leave that chapter behind because what matters to
+        me is you, our relationship, and the future we're building together.
+      </p>
+      <p class="letter-body">
+        I know trust isn't something that comes back overnight. It takes consistency, honesty, and time. I'm
+        willing to be patient because I know earning your trust again is something I have to work for, not
+        something I should expect. I promise to keep showing you through my actions that you're the person I
+        choose, every single day.
+      </p>
+      <p class="letter-body">
+        You once told me that you weren't going anywhere, and those words have stayed with me ever since. They've
+        given me comfort during difficult days and reminded me that love is about choosing each other even when
+        things aren't perfect.
+      </p>
+      <p class="letter-body">So here's my promise to you.</p>
+      <p class="letter-body">I'm not leaving either.</p>
+      <p class="letter-body">
+        I'll choose you on the easy days and on the difficult ones. I'll choose you when we're celebrating and when
+        we're struggling. I'll choose you when life is exciting and when it feels ordinary. I'll continue learning
+        how to love you better because you deserve nothing less.
+      </p>
+      <p class="letter-body">
+        Thank you for every memory we've shared. Thank you for every laugh, every hug, every conversation, every
+        adventure, every lesson, and even every challenge because they've helped us grow stronger together. Thank
+        you for making me feel loved, understood, and accepted. Thank you for becoming the person I can always run
+        to, no matter what kind of day I've had.
+      </p>
+      <p class="letter-body">
+        Even after two years, you're still the first person I want to tell whenever something good happens. You're
+        still the first person I think about when I wake up and the last person I want to talk to before I fall
+        asleep. You're still my favorite hello and the hardest goodbye.
+      </p>
+      <p class="letter-body">
+        I'm excited for everything that's still waiting for us — the places we'll visit, the sunsets we'll watch
+        together, the dreams we'll chase, the traditions we'll create, and all the simple moments that will one day
+        become our favorite memories.
+      </p>
+      <p class="letter-body">
+        I know we'll both continue to grow and change. We'll become different versions of ourselves as the years go
+        by. But if there's one thing I'm certain about, it's that I want to keep growing beside you. I want to meet
+        every future version of you, and I hope every future version of me still gets the privilege of loving you.
+      </p>
+      <p class="letter-body">Happy second anniversary, my love.</p>
+      <p class="letter-body">
+        Thank you for giving me the happiest two years of my life. Thank you for choosing me through my best
+        moments and my worst ones. Thank you for loving me even when I wasn't perfect.
+      </p>
+      <p class="letter-body">I love you today, tomorrow, and every 07/23 after this one.</p>
+      <p class="letter-sign">Always yours,<br>[John Carlo "panget" Moresca] 🌷</p>
+    </div>
+  </div>
+</div>
+
+<!-- OVERLAY: MEMORIES (Next 3-4th Anniversarry art gallery) -->
+<div class="overlay" id="memoriesOverlay">
+  <div class="overlay-backdrop" id="memoriesBackdrop"></div>
+  <div class="memories-card" id="memoriesCard">
+    <div class="memories-inner">
+      <button class="close-btn" id="closeMemoriesBtn">✕</button>
+      <div class="memories-eyebrow">Next 3-4th Anniversarry Why</div>
+      <div class="memories-title">Our Gallery Of Us</div>
+      <div class="memories-sub">Every heart starts empty. Answer the question, add your proof, and unlock the next one 💕</div>
+      <div id="galleryBody"></div>
+    </div>
+  </div>
+</div>
+
+<!-- OVERLAY: PHOTOBOOTH (What's Next — heart camera capture) -->
+<div class="overlay" id="photoboothOverlay">
+  <div class="overlay-backdrop" id="photoboothBackdrop"></div>
+  <div class="photobooth-card" id="photoboothCard">
+    <button class="close-btn" id="closePhotoboothBtn">✕</button>
+    <div class="photobooth-inner" id="photoboothInner"></div>
+  </div>
+</div>
+
+<!-- OVERLAY: GAME (heart tic-tac-toe, 5 rounds) -->
+<div class="overlay" id="gameOverlay">
+  <div class="overlay-backdrop" id="gameBackdrop"></div>
+  <div class="photobooth-card" id="gameCard">
+    <button class="close-btn" id="closeGameBtn">✕</button>
+    <div class="photobooth-inner" id="gameInner"></div>
+  </div>
+</div>
+
+<!-- OVERLAY: SIMPLE (memories / what's next) -->
+<div class="overlay" id="simpleOverlay">
+  <div class="overlay-backdrop" id="simpleBackdrop"></div>
+  <div class="simple-card" id="simpleCard">
+    <button class="close-btn" id="closeSimpleBtn">✕</button>
+    <div class="simple-icon" id="simpleIcon">🌷</div>
+    <h3 id="simpleTitle">Our Memories</h3>
+    <p id="simpleText">This chapter is still being written together.</p>
+    <ul class="simple-list hidden" id="simpleList"></ul>
+  </div>
+</div>
+
+<script>
+/* ---------------- Falling tulips ---------------- */
+const tulipColors = [
+  {petal:'#ff9d7a', petalDark:'#e8927c', stem:'#8fae6d'},
+  {petal:'#ffb4c6', petalDark:'#f28aa3', stem:'#9bbf7a'},
+  {petal:'#ffd27a', petalDark:'#f0b25a', stem:'#8fae6d'},
+  {petal:'#ff8f9e', petalDark:'#e8697e', stem:'#a3c47f'},
+];
+
+function tulipSVG(c){
+  return `
+  <svg width="34" height="44" viewBox="0 0 34 44" xmlns="http://www.w3.org/2000/svg">
+    <path d="M17 44 L17 20" stroke="${c.stem}" stroke-width="2" stroke-linecap="round"/>
+    <path d="M17 30 Q10 28 8 22" stroke="${c.stem}" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+    <g>
+      <path d="M17 4 C10 4 8 12 8 18 C8 22 12 24 17 24 C22 24 26 22 26 18 C26 12 24 4 17 4Z" fill="${c.petal}"/>
+      <path d="M17 6 C13 8 11 13 11.5 18 C12 21 14.5 22.5 17 22.5" fill="${c.petalDark}" opacity="0.55"/>
+      <path d="M17 6 C21 8 23 13 22.5 18 C22 21 19.5 22.5 17 22.5" fill="${c.petalDark}" opacity="0.35"/>
+    </g>
+  </svg>`;
+}
+
+const field = document.getElementById('tulip-field');
+const TULIP_COUNT = 16;
+for(let i=0;i<TULIP_COUNT;i++){
+  const el = document.createElement('div');
+  el.className = 'tulip';
+  const c = tulipColors[Math.floor(Math.random()*tulipColors.length)];
+  const size = 24 + Math.random()*22;
+  el.style.left = Math.random()*100 + 'vw';
+  el.style.width = size + 'px';
+  el.innerHTML = tulipSVG(c);
+  const duration = 9 + Math.random()*10;
+  const delay = Math.random()*-duration;
+  el.style.animationDuration = duration + 's';
+  el.style.animationDelay = delay + 's';
+  field.appendChild(el);
+}
+
+/* ---------------- Digit input logic ---------------- */
+const inputs = Array.from(document.querySelectorAll('.digits input'));
+const errorMsg = document.getElementById('errorMsg');
+const card = document.getElementById('card');
+const unlockBtn = document.getElementById('unlockBtn');
+const CODE = "07232024";
+
+inputs.forEach((inp, idx) => {
+  inp.addEventListener('input', (e) => {
+    const val = e.target.value.replace(/[^0-9]/g,'');
+    e.target.value = val.slice(-1);
+    if(val && idx < inputs.length - 1){ inputs[idx+1].focus(); }
+    errorMsg.classList.remove('show');
+  });
+
+  inp.addEventListener('keydown', (e) => {
+    if(e.key === 'Backspace' && !e.target.value && idx > 0){ inputs[idx-1].focus(); }
+    if(e.key === 'Enter'){ attemptUnlock(); }
+  });
+
+  inp.addEventListener('paste', (e) => {
+    e.preventDefault();
+    const paste = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g,'');
+    if(!paste) return;
+    for(let i=0;i<inputs.length;i++){ inputs[i].value = paste[i] || ''; }
+    const lastFilled = Math.min(paste.length, inputs.length) - 1;
+    if(lastFilled >= 0) inputs[lastFilled].focus();
+  });
+});
+
+function attemptUnlock(){
+  const entered = inputs.map(i => i.value).join('');
+  if(entered.length < 8){ triggerError(); return; }
+  if(entered === CODE){ unlockSuccess(); } else { triggerError(); }
+}
+
+function triggerError(){
+  errorMsg.classList.add('show');
+  card.classList.remove('shake');
+  void card.offsetWidth;
+  card.classList.add('shake');
+  inputs.forEach(i => i.style.borderColor = 'rgba(209,107,107,0.6)');
+  setTimeout(() => { inputs.forEach(i => i.style.borderColor = ''); }, 700);
+}
+
+function unlockSuccess(){
+  card.style.transform = 'scale(0.96)';
+  card.style.opacity = '0.4';
+  setTimeout(() => {
+    document.getElementById('lockView').classList.add('hidden');
+    document.getElementById('successView').classList.add('show');
+    card.style.transform = 'scale(1)';
+    card.style.opacity = '1';
+    burstHearts();
+  }, 320);
+}
+
+unlockBtn.addEventListener('click', attemptUnlock);
+
+/* ---------------- Celebration burst ---------------- */
+function burstHearts(){
+  const colors = ['#e8927c','#f28aa3','#c9975a','#ffb4c6'];
+  for(let i=0;i<24;i++){
+    const heart = document.createElement('div');
+    heart.style.position = 'fixed';
+    heart.style.left = '50%';
+    heart.style.top = '45%';
+    heart.style.width = '10px';
+    heart.style.height = '10px';
+    heart.style.background = colors[Math.floor(Math.random()*colors.length)];
+    heart.style.borderRadius = '50% 50% 50% 0';
+    heart.style.transform = 'rotate(45deg)';
+    heart.style.zIndex = 5;
+    heart.style.pointerEvents = 'none';
+    document.body.appendChild(heart);
+
+    const angle = Math.random() * Math.PI * 2;
+    const dist = 120 + Math.random()*180;
+    const dx = Math.cos(angle) * dist;
+    const dy = Math.sin(angle) * dist - 80;
+
+    heart.animate([
+      { transform: 'translate(0,0) rotate(45deg) scale(0.6)', opacity: 1 },
+      { transform: `translate(${dx}px, ${dy}px) rotate(45deg) scale(1.1)`, opacity: 0 }
+    ], {
+      duration: 1100 + Math.random()*600,
+      easing: 'cubic-bezier(.22,1,.36,1)',
+      fill: 'forwards'
+    });
+
+    setTimeout(() => heart.remove(), 2000);
+  }
+}
+
+window.addEventListener('load', () => inputs[0].focus());
+
+/* ---------------- Scene transition: stage -> world ---------------- */
+const stage = document.getElementById('stage');
+const worldView = document.getElementById('worldView');
+const exploreBtn = document.getElementById('exploreBtn');
+const backBtn = document.getElementById('backBtn');
+
+exploreBtn.addEventListener('click', () => {
+  stage.classList.add('fade-out');
+  setTimeout(() => { worldView.classList.add('show'); }, 350);
+});
+
+backBtn.addEventListener('click', () => {
+  worldView.classList.remove('show');
+  setTimeout(() => { stage.classList.remove('fade-out'); }, 300);
+});
+
+/* ---------------- Letter overlay ---------------- */
+const letterOverlay = document.getElementById('letterOverlay');
+const letterBackdrop = document.getElementById('letterBackdrop');
+const envelope = document.getElementById('envelope');
+const envelopeScene = document.getElementById('envelopeScene');
+const letterCard = document.getElementById('letterCard');
+const closeLetterBtn = document.getElementById('closeLetterBtn');
+const heartLeft = document.getElementById('heartLeft');
+
+/* ---------------- Heart merge tracking ---------------- */
+let visitedLetter = false;
+let visitedMemories = false;
+let visitedNext = false;
+let heartsMerged = false;
+
+function checkMerge(){
+  if(visitedLetter && visitedMemories && visitedNext && !heartsMerged){
+    heartsMerged = true;
+    setTimeout(triggerMerge, 300);
+  }
+}
+
+function triggerMerge(){
+  const heartsRow = document.querySelector('.hearts-row');
+  heartsRow.classList.add('merging');
+  setTimeout(() => {
+    heartsRow.style.display = 'none';
+    document.getElementById('mergedHeart').style.display = 'flex';
+  }, 700);
+}
+
+heartLeft.addEventListener('click', () => {
+  letterOverlay.classList.add('show');
+  visitedLetter = true;
+  checkMerge();
+});
+
+envelope.addEventListener('click', () => {
+  if(envelope.classList.contains('open')) return;
+  envelope.classList.add('open');
+  setTimeout(() => {
+    envelopeScene.classList.add('hidden-away');
+    letterCard.classList.add('show');
+  }, 650);
+});
+
+function resetLetter(){
+  letterOverlay.classList.remove('show');
+  setTimeout(() => {
+    envelope.classList.remove('open');
+    envelopeScene.classList.remove('hidden-away');
+    letterCard.classList.remove('show');
+  }, 400);
+}
+
+closeLetterBtn.addEventListener('click', resetLetter);
+letterBackdrop.addEventListener('click', resetLetter);
+
+/* ---------------- Simple overlay (memories / what's next) ---------------- */
+const simpleOverlay = document.getElementById('simpleOverlay');
+const simpleBackdrop = document.getElementById('simpleBackdrop');
+const simpleCard = document.getElementById('simpleCard');
+const closeSimpleBtn = document.getElementById('closeSimpleBtn');
+const simpleIcon = document.getElementById('simpleIcon');
+const simpleTitle = document.getElementById('simpleTitle');
+const simpleText = document.getElementById('simpleText');
+const simpleList = document.getElementById('simpleList');
+const heartMiddle = document.getElementById('heartMiddle');
+const heartRight = document.getElementById('heartRight');
+
+function openSimple(icon, title, text, listItems){
+  simpleIcon.textContent = icon;
+  simpleTitle.textContent = title;
+  simpleText.textContent = text;
+  simpleList.innerHTML = '';
+  if(listItems && listItems.length){
+    listItems.forEach(t => {
+      const li = document.createElement('li');
+      li.textContent = t;
+      simpleList.appendChild(li);
+    });
+    simpleList.classList.remove('hidden');
+  } else {
+    simpleList.classList.add('hidden');
+  }
+  simpleOverlay.classList.add('show');
+  requestAnimationFrame(() => simpleCard.classList.add('show'));
+}
+
+/* ---------------- Memories: 24 Reasons locked-frame art gallery ---------------- */
+// Each heart starts as an empty frame. Tap the glowing (current) frame, answer its
+// question, add a photo as proof, then it unlocks the next frame. Edit the question
+// text below any time — every string here is just plain text you can rewrite.
+const FRAMES = [
+ "If we could see our relationship exactly 2 years from now, what do you hope we'd see?",
+"Where do you picture us living two years from today?",
+"What kind of life do you hope we've built together by then?",
+"What's one milestone you hope we've reached as a couple?",
+"If we could write a letter to our future selves, what would it say?",
+"What do you hope we've overcome together in the next 2 years?",
+"What habit do you hope we've built that makes our relationship stronger?",
+"What memory do you hope becomes our favorite over the next 2 years?",
+"What's one risk you hope we're brave enough to take together?",
+"If we only achieve one dream together in the next 2 years, what should it be?",
+"What kind of home do you imagine us creating together?",
+"How do you hope we've changed for the better as individuals?",
+"What's one tradition you want us to start and still be doing two years from now?",
+"What new place do you hope we've explored together?",
+"How do you want us to celebrate our wins, big or small?",
+"If life gets harder than we expect, what promise should we never break?",
+"What's one thing you hope we'll never argue about again?",
+"What do you think our future selves would thank us for starting today?",
+"What's something we should stop doing now so our future relationship is healthier?",
+"If our future children (or future selves) asked what made our relationship strong, what would you want the answer to be?",
+"What's one financial goal you hope we've accomplished together?",
+"What's one personal dream of mine you want to help me achieve?",
+"What's one personal dream of yours you'd trust me to help you achieve?",
+"What's one dream we should never give up on, no matter how long it takes?",
+"If we had to move to another country together, where would you choose and why?",
+"If we could relive one day from the next 2 years forever, what do you hope that day would be?",
+"What do you hope people notice first about our relationship two years from now?",
+"What do you think will be our biggest accomplishment as a couple?",
+"If our future selves could give us one piece of advice today, what do you think it would be?",
+"On our second anniversary from today, what do you hope we're celebrating besides still being together?",
+"What's one challenge that could make us stronger instead of breaking us?",
+"How do you want us to keep falling in love, even after these next 2 years?",
+"What's one thing you hope I'll always remember about this chapter of our lives?",
+"If we create a bucket list for the next 2 years, what's the first thing you'd add?",
+"What kind of legacy do you want us to build together?",
+"When we look back two years from now, what do you hope we'll be most grateful for?"
+].map((q, i) => ({ q, index: i, answer: '', photo: null, done: false }));
+
+/* ---- Persistence: IndexedDB (survives closing/reopening this file in the same browser) ---- */
+const GALLERY_DB_NAME = 'ourAnniversaryGallery';
+const GALLERY_DB_VERSION = 1;
+const GALLERY_STORE = 'frames';
+let galleryLoaded = false;
+
+function openGalleryDB(){
+  return new Promise((resolve, reject) => {
+    if(!('indexedDB' in window)){ reject(new Error('IndexedDB unsupported')); return; }
+    const req = indexedDB.open(GALLERY_DB_NAME, GALLERY_DB_VERSION);
+    req.onupgradeneeded = (e) => {
+      const db = e.target.result;
+      if(!db.objectStoreNames.contains(GALLERY_STORE)){
+        db.createObjectStore(GALLERY_STORE, { keyPath: 'index' });
+      }
+    };
+    req.onsuccess = (e) => resolve(e.target.result);
+    req.onerror = (e) => reject(e.target.error);
+  });
+}
+
+async function saveFrameToDB(frame){
+  try{
+    const db = await openGalleryDB();
+    await new Promise((resolve, reject) => {
+      const tx = db.transaction(GALLERY_STORE, 'readwrite');
+      tx.objectStore(GALLERY_STORE).put({ index: frame.index, answer: frame.answer, photo: frame.photo, done: frame.done });
+      tx.oncomplete = resolve;
+      tx.onerror = (e) => reject(e.target.error);
+    });
+  } catch(err){ console.warn('Could not save to this browser\'s storage:', err); }
+}
+
+async function loadFramesFromDB(){
+  try{
+    const db = await openGalleryDB();
+    return await new Promise((resolve, reject) => {
+      const tx = db.transaction(GALLERY_STORE, 'readonly');
+      const req = tx.objectStore(GALLERY_STORE).getAll();
+      req.onsuccess = () => resolve(req.result || []);
+      req.onerror = (e) => reject(e.target.error);
+    });
+  } catch(err){ console.warn('Could not read this browser\'s storage:', err); return []; }
+}
+
+async function ensureGalleryLoaded(){
+  if(galleryLoaded) return;
+  const saved = await loadFramesFromDB();
+  saved.forEach(s => {
+    const f = FRAMES[s.index];
+    if(f){ f.answer = s.answer || ''; f.photo = s.photo || null; f.done = !!s.done; }
+  });
+  galleryLoaded = true;
+}
+
+/* ---- Backup / restore as a JSON file, in case the browser storage ever gets cleared ---- */
+function exportGalleryBackup(){
+  const data = FRAMES.map(f => ({ index: f.index, q: f.q, answer: f.answer, photo: f.photo, done: f.done }));
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'Next 3-4th Anniversarry art gallery-backup.json';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+async function importGalleryBackup(file){
+  try{
+    const text = await file.text();
+    const data = JSON.parse(text);
+    if(!Array.isArray(data)) throw new Error('Invalid backup file');
+    for(const item of data){
+      const f = FRAMES[item.index];
+      if(!f) continue;
+      f.answer = item.answer || '';
+      f.photo = item.photo || null;
+      f.done = !!item.done;
+      await saveFrameToDB(f);
+    }
+    renderGallery();
+  } catch(err){
+    console.warn('Could not import backup:', err);
+    alert("That backup file couldn't be read. Make sure it's the .json file downloaded from this gallery's Backup button.");
+  }
+}
+
+const galleryBody = document.getElementById('galleryBody');
+
+function firstIncompleteIndex(){
+  const i = FRAMES.findIndex(f => !f.done);
+  return i === -1 ? FRAMES.length : i;
+}
+
+function renderGallery(){
+  const currentIdx = firstIncompleteIndex();
+  const completedCount = FRAMES.length - (FRAMES.length - currentIdx);
+  const doneCount = FRAMES.filter(f => f.done).length;
+  const pct = Math.round((doneCount / FRAMES.length) * 100);
+  const rotations = [-4,3,-2,5,-6,2,4,-3,6,-5,1,-1];
+  const allDone = doneCount === FRAMES.length;
+
+  galleryBody.innerHTML = `
+    <div class="frame-progress">
+      <div class="frame-progress-bar"><div class="frame-progress-fill" style="width:${pct}%"></div></div>
+      <div class="frame-progress-label">${doneCount} / ${FRAMES.length} hearts unlocked · saved automatically in this browser 💾</div>
+    </div>
+    ${allDone ? `<div class="gallery-complete-banner">Every heart is filled. This is us. 🌷</div>` : ''}
+    <div class="gallery-notice" id="galleryNotice">Finish the glowing heart first 💭</div>
+    <div style="display:flex; gap:8px; justify-content:center; margin-bottom:18px;">
+      <button class="pb-btn" id="exportGalleryBtn" style="font-size:10.5px; padding:8px 14px;">⬇ Backup</button>
+      <button class="pb-btn" id="importGalleryBtn" style="font-size:10.5px; padding:8px 14px;">⬆ Restore</button>
+      <input type="file" id="importGalleryFile" accept="application/json" hidden>
+    </div>
+    <div class="poly-grid" id="polyGrid"></div>
+    <div class="memories-hint">Tap the glowing heart to answer and add your proof — each one unlocks the next.</div>
+  `;
+
+  const polyGrid = document.getElementById('polyGrid');
+  polyGrid.innerHTML = FRAMES.map((f, i) => {
+    const isDone = f.done;
+    const isCurrent = i === currentIdx;
+    const isLocked = !isDone && !isCurrent;
+    const statusClass = isDone ? 'frame-completed' : (isCurrent ? 'frame-current' : '');
+    const photoClass = isLocked ? 'frame-locked' : (f.photo ? 'has-photo' : '');
+    const bgStyle = f.photo ? `style="background-image:url(${f.photo})"` : '';
+    const placeholderEmoji = isLocked ? '🔒' : (isCurrent ? '🤍' : '🌷');
+    const placeholderText = isLocked ? 'locked' : (isCurrent ? 'tap to unlock' : '');
+    const caption = isDone ? (f.answer.length > 46 ? f.answer.slice(0,46) + '…' : f.answer)
+                    : (isCurrent ? 'Tap to answer' : '???');
+    return `
+    <div class="poly-card ${statusClass}" style="--r:${isDone || isCurrent ? 0 : rotations[i % rotations.length]}deg" data-index="${i}">
+      <div class="poly-month">Next Gen OF US ${i+1}</div>
+      <div class="heart-photo ${photoClass}" ${bgStyle}>
+        ${!f.photo ? `<div class="poly-placeholder"><span class="emoji">${placeholderEmoji}</span><span>${placeholderText}</span></div>` : ''}
+        ${isDone ? '<span class="check-badge">✓</span>' : ''}
+      </div>
+      <div class="poly-caption">${caption}</div>
+    </div>
+  `;
+  }).join('');
+
+  polyGrid.querySelectorAll('.poly-card').forEach(cardEl => {
+    cardEl.addEventListener('click', () => {
+      const idx = parseInt(cardEl.dataset.index, 10);
+      const f = FRAMES[idx];
+      if(f.done){ openFrameDetail(idx, true); }
+      else if(idx === firstIncompleteIndex()){ openFrameDetail(idx, false); }
+      else { showGalleryNotice(); }
+    });
+  });
+
+  document.getElementById('exportGalleryBtn').addEventListener('click', exportGalleryBackup);
+  document.getElementById('importGalleryFile').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if(file) importGalleryBackup(file);
+    e.target.value = '';
+  });
+  document.getElementById('importGalleryBtn').addEventListener('click', () => {
+    document.getElementById('importGalleryFile').click();
+  });
+}
+
+function showGalleryNotice(){
+  const n = document.getElementById('galleryNotice');
+  if(!n) return;
+  n.classList.add('show');
+  setTimeout(() => n.classList.remove('show'), 1400);
+}
+
+function openFrameDetail(idx, isEdit){
+  const f = FRAMES[idx];
+  galleryBody.innerHTML = `
+    <div class="frame-detail">
+      <div class="frame-detail-eyebrow">Next Gen OF US ${idx+1} of ${FRAMES.length}</div>
+      <div class="frame-detail-q">${f.q}</div>
+      <div class="frame-detail-photo ${f.photo ? 'has-photo' : ''}" id="frameDetailPhoto" ${f.photo ? `style="background-image:url(${f.photo})"` : ''}>
+        <div class="poly-placeholder"><span class="emoji">🌷</span><span>tap to add proof</span></div>
+        <input type="file" accept="image/*" id="frameDetailFile" hidden>
+      </div>
+      <div class="frame-detail-hint">a little photo proof that it's true</div>
+      <button class="pb-btn" id="frameRemovePhotoBtn" style="font-size:10.5px; padding:7px 12px; margin:0 auto 16px; display:${f.photo ? 'block' : 'none'};">🗑 Remove Photo</button>
+      <textarea class="q-input" id="frameDetailAnswer" rows="3" placeholder="Type your answer...">${f.answer}</textarea>
+      <div class="frame-warn" id="frameWarn">Add both an answer and a photo, love 💭</div>
+      <div class="frame-detail-actions">
+        <button class="pb-btn" id="frameBackBtn">← Back</button>
+        <button class="shutter-btn" id="frameSaveBtn">${isEdit ? 'Save Changes' : 'Unlock Next Heart →'}</button>
+      </div>
+    </div>
+  `;
+
+  const photoEl = document.getElementById('frameDetailPhoto');
+  const removeBtn = document.getElementById('frameRemovePhotoBtn');
+  photoEl.addEventListener('click', () => document.getElementById('frameDetailFile').click());
+  document.getElementById('frameDetailFile').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      f.photo = ev.target.result;
+      photoEl.style.backgroundImage = `url(${f.photo})`;
+      photoEl.classList.add('has-photo');
+      removeBtn.style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+  });
+
+  removeBtn.addEventListener('click', async () => {
+    f.photo = null;
+    f.done = false;
+    photoEl.style.backgroundImage = '';
+    photoEl.classList.remove('has-photo');
+    removeBtn.style.display = 'none';
+    await saveFrameToDB(f);
+  });
+
+  document.getElementById('frameBackBtn').addEventListener('click', renderGallery);
+
+  document.getElementById('frameSaveBtn').addEventListener('click', async () => {
+    const answer = document.getElementById('frameDetailAnswer').value.trim();
+    if(!answer || !f.photo){
+      const warn = document.getElementById('frameWarn');
+      warn.classList.add('show');
+      setTimeout(() => warn.classList.remove('show'), 1600);
+      return;
+    }
+    f.answer = answer;
+    f.done = true;
+    const btn = document.getElementById('frameSaveBtn');
+    btn.textContent = 'Saving…';
+    await saveFrameToDB(f);
+    renderGallery();
+  });
+}
+
+const memoriesOverlay = document.getElementById('memoriesOverlay');
+const memoriesBackdrop = document.getElementById('memoriesBackdrop');
+const memoriesCard = document.getElementById('memoriesCard');
+const closeMemoriesBtn = document.getElementById('closeMemoriesBtn');
+
+heartMiddle.addEventListener('click', async () => {
+  galleryBody.innerHTML = '<div style="text-align:center;padding:40px 0;color:var(--plum-soft);font-size:12.5px;">opening your gallery…</div>';
+  memoriesOverlay.classList.add('show');
+  requestAnimationFrame(() => memoriesCard.classList.add('show'));
+  await ensureGalleryLoaded();
+  renderGallery();
+  visitedMemories = true;
+  checkMerge();
+});
+
+function closeMemories(){
+  memoriesCard.classList.remove('show');
+  setTimeout(() => { memoriesOverlay.classList.remove('show'); }, 350);
+}
+
+closeMemoriesBtn.addEventListener('click', closeMemories);
+memoriesBackdrop.addEventListener('click', closeMemories);
+
+/* ---------------- What's Next: question flow (no camera) ---------------- */
+const photoboothOverlay = document.getElementById('photoboothOverlay');
+const photoboothBackdrop = document.getElementById('photoboothBackdrop');
+const photoboothCard = document.getElementById('photoboothCard');
+const photoboothInner = document.getElementById('photoboothInner');
+const closePhotoboothBtn = document.getElementById('closePhotoboothBtn');
+
+const QUESTIONS = [
+  { question: "Where should we go on our next little adventure?", placeholder: "our next trip..." },
+  { question: "What's something new we should try together?", placeholder: "an idea for us..." },
+  { question: "What tradition do we want to start from today on?", placeholder: "something just for us..." },
+  { question: "In one word, how does \"us\" feel right now?", placeholder: "one word..." },
+];
+
+let qIndex = 0;
+let qAnswers = [];
+
+heartRight.addEventListener('click', () => {
+  qIndex = 0;
+  qAnswers = [];
+  photoboothOverlay.classList.add('show');
+  requestAnimationFrame(() => photoboothCard.classList.add('show'));
+  renderQuestion();
+  visitedNext = true;
+  checkMerge();
+});
+
+function renderQuestion(){
+  const q = QUESTIONS[qIndex];
+  photoboothInner.innerHTML = `
+    <div class="pb-eyebrow">What's Next</div>
+    <div class="q-progress">
+      ${QUESTIONS.map((_, i) => `<span class="q-dot ${i === qIndex ? 'active' : ''} ${i < qIndex ? 'done' : ''}"></span>`).join('')}
+    </div>
+    <h3 class="pb-title">${q.question}</h3>
+    <textarea class="q-input" id="qInput" rows="3" placeholder="${q.placeholder}">${qAnswers[qIndex] || ''}</textarea>
+    <div class="q-nav">
+      ${qIndex > 0 ? '<button class="pb-btn" id="qBack">← Back</button>' : '<span></span>'}
+      <button class="shutter-btn" id="qNext">${qIndex === QUESTIONS.length - 1 ? 'Reveal 💕' : 'Next →'}</button>
+    </div>
+  `;
+
+  document.getElementById('qNext').addEventListener('click', () => {
+    qAnswers[qIndex] = document.getElementById('qInput').value.trim();
+    if(qIndex < QUESTIONS.length - 1){ qIndex++; renderQuestion(); } else { renderSummary(); }
+  });
+
+  if(qIndex > 0){
+    document.getElementById('qBack').addEventListener('click', () => {
+      qAnswers[qIndex] = document.getElementById('qInput').value.trim();
+      qIndex--; renderQuestion();
+    });
+  }
+}
+
+function renderSummary(){
+  photoboothInner.innerHTML = `
+    <div class="pb-eyebrow">Sealed With Love</div>
+    <h3 class="pb-title">Our Little Promises</h3>
+    <div class="q-summary">
+      ${QUESTIONS.map((q, i) => `
+        <div class="q-summary-item">
+          <div class="q-summary-q">${q.question}</div>
+          <div class="q-summary-a">${qAnswers[i] ? qAnswers[i] : '—'}</div>
+        </div>
+      `).join('')}
+    </div>
+    <button class="pb-btn" id="saveAnswersBtn" style="margin-top:16px;">💾 Save Our Answers</button>
+    <div class="pb-final">To be continued...</div>
+    <p class="pb-note">Here's to writing these answers together, one day at a time 🌷</p>
+  `;
+  document.getElementById('saveAnswersBtn').addEventListener('click', saveAnswers);
+}
+
+function saveAnswers(){
+  const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  let content = `Our Little Promises\n${today}\n\n`;
+  QUESTIONS.forEach((q, i) => {
+    content += `${q.question}\n${qAnswers[i] ? qAnswers[i] : '—'}\n\n`;
+  });
+  const blob = new Blob([content], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'our-little-promises.txt';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+function closePhotobooth(){
+  photoboothCard.classList.remove('show');
+  setTimeout(() => { photoboothOverlay.classList.remove('show'); }, 350);
+}
+
+closePhotoboothBtn.addEventListener('click', closePhotobooth);
+photoboothBackdrop.addEventListener('click', closePhotobooth);
+
+function closeSimple(){
+  simpleCard.classList.remove('show');
+  setTimeout(() => { simpleOverlay.classList.remove('show'); }, 300);
+}
+
+closeSimpleBtn.addEventListener('click', closeSimple);
+simpleBackdrop.addEventListener('click', closeSimple);
+
+/* ---------------- Heart Tic-Tac-Toe: Jana vs Carlo, 5 rounds ---------------- */
+const gameOverlay = document.getElementById('gameOverlay');
+const gameBackdrop = document.getElementById('gameBackdrop');
+const gameCard = document.getElementById('gameCard');
+const gameInner = document.getElementById('gameInner');
+const closeGameBtn = document.getElementById('closeGameBtn');
+const mergedHeart = document.getElementById('mergedHeart');
+
+const PLAYERS = [
+  { name: 'Jana', color: '#e8927c', emoji: '💗' },
+  { name: 'Carlo', color: '#6f9bc4', emoji: '💙' },
+];
+
+const WIN_COMBOS = [
+  [0,1,2],[3,4,5],[6,7,8],
+  [0,3,6],[1,4,7],[2,5,8],
+  [0,4,8],[2,4,6],
+];
+
+const FORFEIT_QUESTIONS = [
+  "What's your favorite memory of us so far?",
+  "What's one thing you love most about your partner?",
+  "If we could teleport anywhere right now, where would you go?",
+  "What's a silly nickname you secretly like?",
+  "What's one dream you want us to chase together?",
+  "What's the most romantic thing your partner has done?",
+  "What's a habit of your partner that secretly makes you smile?",
+  "If today was a movie, what would its title be?",
+];
+
+let ttBoard = Array(9).fill(null);
+let ttCurrentPlayer = 0;
+let ttRound = 1;
+let ttScores = [0, 0];
+let ttStarter = 0;
+let ttActive = true;
+
+function heartSVG(color){
+  return `<svg viewBox="0 0 24 24" fill="none"><path d="M12 21C12 21 3 14.7 3 8.3C3 4.8 5.7 2.5 8.7 2.5C10.6 2.5 11.6 3.4 12 4.3C12.4 3.4 13.4 2.5 15.3 2.5C18.3 2.5 21 4.8 21 8.3C21 14.7 12 21 12 21Z" fill="${color}"/></svg>`;
+}
+
+mergedHeart.addEventListener('click', () => {
+  resetGameState();
+  gameOverlay.classList.add('show');
+  requestAnimationFrame(() => gameCard.classList.add('show'));
+  renderBoard();
+});
+
+function resetGameState(){
+  ttRound = 1;
+  ttScores = [0, 0];
+  ttStarter = 0;
+  startRound();
+}
+
+function startRound(){
+  ttBoard = Array(9).fill(null);
+  ttCurrentPlayer = ttStarter;
+  ttActive = true;
+}
+
+function renderBoard(){
+  const turn = PLAYERS[ttCurrentPlayer];
+  gameInner.innerHTML = `
+    <div class="pb-eyebrow">One Heart, Two Players</div>
+    <h3 class="pb-title">Round ${ttRound} of 5</h3>
+    <div class="ttt-score">
+      <span style="color:${PLAYERS[0].color}">${PLAYERS[0].emoji} Jana: ${ttScores[0]}</span>
+      <span style="color:${PLAYERS[1].color}">${PLAYERS[1].emoji} Carlo: ${ttScores[1]}</span>
+    </div>
+    <div class="ttt-turn" style="color:${turn.color}">${turn.name}'s turn</div>
+    <div class="ttt-board" id="tttBoard">
+      ${ttBoard.map((cell, i) => `<div class="ttt-cell" data-i="${i}">${cell !== null ? heartSVG(PLAYERS[cell].color) : ''}</div>`).join('')}
+    </div>
+  `;
+  gameInner.querySelectorAll('.ttt-cell').forEach(cell => {
+    cell.addEventListener('click', () => handleCellClick(parseInt(cell.dataset.i, 10)));
+  });
+}
+
+function handleCellClick(i){
+  if(!ttActive || ttBoard[i] !== null) return;
+  ttBoard[i] = ttCurrentPlayer;
+  const winner = checkWinner();
+  if(winner !== null){
+    ttActive = false;
+    ttScores[winner]++;
+    const loser = winner === 0 ? 1 : 0;
+    renderBoard();
+    setTimeout(() => renderRoundResult(winner, loser), 500);
+    return;
+  }
+  if(ttBoard.every(c => c !== null)){
+    ttActive = false;
+    renderBoard();
+    setTimeout(() => renderRoundResult(null, null), 500);
+    return;
+  }
+  ttCurrentPlayer = ttCurrentPlayer === 0 ? 1 : 0;
+  renderBoard();
+}
+
+function checkWinner(){
+  for(const combo of WIN_COMBOS){
+    const [a, b, c] = combo;
+    if(ttBoard[a] !== null && ttBoard[a] === ttBoard[b] && ttBoard[b] === ttBoard[c]) return ttBoard[a];
+  }
+  return null;
+}
+
+function renderRoundResult(winner, loser){
+  if(winner === null){
+    gameInner.innerHTML = `
+      <div class="pb-eyebrow">Round ${ttRound} of 5</div>
+      <h3 class="pb-title">It's A Tie!</h3>
+      <p class="pb-note">No hearts lost this round 🤍</p>
+      <button class="shutter-btn" id="nextRoundBtn">Next Round →</button>
+    `;
+  } else {
+    const q = FORFEIT_QUESTIONS[Math.floor(Math.random() * FORFEIT_QUESTIONS.length)];
+    gameInner.innerHTML = `
+      <div class="pb-eyebrow">Round ${ttRound} of 5</div>
+      <h3 class="pb-title" style="color:${PLAYERS[winner].color}">${PLAYERS[winner].name} Wins This Round!</h3>
+      <p class="pb-sub">${PLAYERS[loser].name}, time to answer:</p>
+      <p class="pb-title" style="font-size:16.5px;">${q}</p>
+      <textarea class="q-input" id="forfeitInput" rows="3" placeholder="your answer..."></textarea>
+      <button class="shutter-btn" id="nextRoundBtn" style="margin-top:14px;">Continue →</button>
+    `;
+  }
+  document.getElementById('nextRoundBtn').addEventListener('click', advanceRound);
+}
+
+function advanceRound(){
+  if(ttRound >= 5){ renderFinalResult(); return; }
+  ttRound++;
+  ttStarter = ttStarter === 0 ? 1 : 0;
+  startRound();
+  renderBoard();
+}
+
+function renderFinalResult(){
+  let resultText, resultColor;
+  if(ttScores[0] > ttScores[1]){ resultText = 'Jana Wins The Game 💗'; resultColor = PLAYERS[0].color; }
+  else if(ttScores[1] > ttScores[0]){ resultText = 'Carlo Wins The Game 💙'; resultColor = PLAYERS[1].color; }
+  else { resultText = "It's A Perfect Tie 🤍"; resultColor = 'var(--plum)'; }
+
+  gameInner.innerHTML = `
+    <div class="pb-eyebrow">Final Score</div>
+    <h3 class="pb-title" style="color:${resultColor}">${resultText}</h3>
+    <div class="ttt-score">
+      <span style="color:${PLAYERS[0].color}">${PLAYERS[0].emoji} Jana: ${ttScores[0]}</span>
+      <span style="color:${PLAYERS[1].color}">${PLAYERS[1].emoji} Carlo: ${ttScores[1]}</span>
+    </div>
+    <div class="pb-final">To be continued...</div>
+    <button class="pb-btn" id="playAgainBtn" style="margin-top:16px;">🔁 Play Again</button>
+  `;
+  document.getElementById('playAgainBtn').addEventListener('click', () => { resetGameState(); renderBoard(); });
+}
+
+function closeGame(){
+  gameCard.classList.remove('show');
+  setTimeout(() => { gameOverlay.classList.remove('show'); }, 350);
+}
+
+closeGameBtn.addEventListener('click', closeGame);
+gameBackdrop.addEventListener('click', closeGame);
+</script>
+
+</body>
+</html>
